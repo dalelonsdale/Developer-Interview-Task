@@ -169,7 +169,6 @@ namespace InterviewTask.Services
 
             return DeliberateBug(openingHours);
         }
-
         
         private static List<HelperServiceModel> DeliberateBug(List<HelperServiceModel> openingHours)
         {
