@@ -6,6 +6,8 @@ namespace InterviewTask.Models
     public class HelperServiceModel
     {
         private string _openStatusText = String.Empty;
+        private bool? _isOpen;
+
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -23,6 +25,22 @@ namespace InterviewTask.Models
             private set
             {
                 _openStatusText = value;
+            }
+        }
+
+        public bool IsOpen
+        {
+            get
+            {
+                if (!_isOpen.HasValue)
+                    UpdateOpenStatus();
+                
+                return _isOpen.Value;
+            }
+
+            private set
+            {
+                _isOpen = value;
             }
         }
         public List<int> MondayOpeningHours { get; set; }        
@@ -44,6 +62,7 @@ namespace InterviewTask.Models
                 || ThursdayOpeningHours == null || FridayOpeningHours == null || SaturdayOpeningHours == null)
             {
                 OpenStatusText = noDataText;
+                IsOpen = false;
                 return;
             }
 
@@ -101,8 +120,8 @@ namespace InterviewTask.Models
                 else
                     nextDay = DateTime.Now.DayOfWeek + 1;
 
-                //Loop for 6 days
-                for (int i = 0; i < 6; i++)
+                //Loop for 7 days
+                for (int i = 0; i < 7; i++)
                 {
                     switch (nextDay)
                     {
@@ -136,14 +155,14 @@ namespace InterviewTask.Models
                             break;
                     }
 
-                    //If not closed times returned then move onto next day
+                    //If closed times return closed text
                     if (nextOpen != 0 && nextClose != 0)
                     {
                         statusText = GetClosedText(nextOpen, nextDay);
                         break; 
                     }
 
-                    //IncrementDay
+                    //Increment day
                     if (nextDay == DayOfWeek.Saturday)
                         nextDay = DayOfWeek.Monday;
                     else
@@ -153,9 +172,15 @@ namespace InterviewTask.Models
 
             //If for some reason data is not open
             if (String.IsNullOrEmpty(statusText))
-                statusText = noDataText;                
+                statusText = noDataText;
 
             OpenStatusText = statusText;
+
+            //Set flag to update store open status
+            if (OpenStatusText.Substring(0, 4).ToUpper() == "OPEN")
+                IsOpen = true;
+            else
+                IsOpen = false; 
         }
 
         private string GetClosedText(int openHour, DayOfWeek day)

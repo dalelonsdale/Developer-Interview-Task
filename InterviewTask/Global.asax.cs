@@ -47,7 +47,7 @@ namespace InterviewTask
             sb.Append(ip);
             sb.Append(" URL:");
             sb.Append(url);
-            logger.LogTrace(sb.ToString());\
+            logger.LogTrace(sb.ToString());
         }
 
 

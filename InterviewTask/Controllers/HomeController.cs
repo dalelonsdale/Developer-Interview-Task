@@ -26,14 +26,12 @@ namespace InterviewTask.Controllers
 
         public ActionResult Index()
         {
-            if (Session["Models"] == null)
-                Session["Models"] = Repo.Get();
             return View(Repo.Get());
         }
 
         public ActionResult UpdateWeather()
         {
-            List<HelperServiceModel> models = (List<HelperServiceModel>)Session["Models"];
+            var models = Repo.Get();
             foreach (var model in models)
             {
                 try
@@ -63,10 +61,8 @@ namespace InterviewTask.Controllers
                     Logger.LogError(e.Message, "HomeController.UpdateWeatherText", e);
                 }
                 
-            }
-            
-            Session["Models"] = models;
+            }           
             return View("Index",models);
-        }
+        } 
     }
 }
